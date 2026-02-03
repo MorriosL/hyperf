@@ -65,6 +65,7 @@ class ValidationExistsRuleTest extends TestCase
         ApplicationContext::setContainer($container);
         Register::setConnectionResolver($resolver);
         $container->shouldReceive('get')->with(EventDispatcherInterface::class)->andReturn(new EventDispatcher());
+        $container->shouldReceive('make')->with(UserWithConnection::class)->andReturn(new UserWithConnection());
 
         $this->createSchema();
     }

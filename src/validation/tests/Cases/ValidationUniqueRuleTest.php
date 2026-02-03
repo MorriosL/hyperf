@@ -12,10 +12,13 @@ declare(strict_types=1);
 
 namespace HyperfTest\Validation\Cases;
 
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Database\Model\Model;
 use Hyperf\Validation\Rules\Unique;
+use Mockery as m;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 
 /**
  * @internal
@@ -24,6 +27,21 @@ use PHPUnit\Framework\TestCase;
 #[CoversNothing]
 class ValidationUniqueRuleTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        $container = m::mock(ContainerInterface::class);
+        $container->shouldReceive('make')
+            ->with(DatabaseModelWithConnection::class)
+            ->andReturn(new DatabaseModelWithConnection());
+
+        ApplicationContext::setContainer($container);
+    }
+
+    protected function tearDown(): void
+    {
+        m::close();
+    }
+
     public function testItCorrectlyFormatsAStringVersionOfTheRule()
     {
         $rule = new Unique('table');
