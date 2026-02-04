@@ -51,11 +51,13 @@ trait DatabaseRule
         }
 
         if (is_subclass_of($table, Model::class)) {
+            /** @var Model $model */
             $model = make($table);
+            if ($connection = $model->getConnectionName()) {
+                return $connection . '.' . $model->getTable();
+            }
 
-            return implode('.', array_map(function (string $part) {
-                return trim($part, '.');
-            }, array_filter([$model->getConnectionName(), $model->getTable()])));
+            return $model->getTable();
         }
 
         return $table;
